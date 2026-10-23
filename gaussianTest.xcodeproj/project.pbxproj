@@ -6,6 +6,12 @@
 	objectVersion = 90;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7A0000000000000000000001 /* GraciaSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 7A0000000000000000000011 /* GraciaSDK */; };
+		7A0000000000000000000002 /* GraciaCamera in Frameworks */ = {isa = PBXBuildFile; productRef = 7A0000000000000000000012 /* GraciaCamera */; };
+		7A0000000000000000000003 /* GraciaView in Frameworks */ = {isa = PBXBuildFile; productRef = 7A0000000000000000000013 /* GraciaView */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* gaussianTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gaussianTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		681BB516308A431900BB5CE8 /* TechPRD.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TechPRD.md; sourceTree = "<group>"; };
@@ -24,6 +30,9 @@
 		000000000000000130000000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				7A0000000000000000000001 /* GraciaSDK in Frameworks */,
+				7A0000000000000000000002 /* GraciaCamera in Frameworks */,
+				7A0000000000000000000003 /* GraciaView in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -72,6 +81,11 @@
 				000000000000000000000010 /* gaussianTest */,
 			);
 			name = gaussianTest;
+			packageProductDependencies = (
+				7A0000000000000000000011 /* GraciaSDK */,
+				7A0000000000000000000012 /* GraciaCamera */,
+				7A0000000000000000000013 /* GraciaView */,
+			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* gaussianTest.app */;
 			productType = "com.apple.product-type.application";
@@ -100,6 +114,9 @@
 			);
 			mainGroup = 000000000000000000000001;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				7A0000000000000000000021 /* XCRemoteSwiftPackageReference "apple-sdk" */,
+			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
 			projectDirPath = "";
@@ -266,6 +283,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5Z8G42AVKD;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -288,13 +306,13 @@
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "macosx xros";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = 7;
 			};
 			name = Debug;
 		};
@@ -305,6 +323,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5Z8G42AVKD;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -327,13 +346,13 @@
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "macosx xros";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = 7;
 			};
 			name = Release;
 		};
@@ -357,6 +376,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		7A0000000000000000000021 /* XCRemoteSwiftPackageReference "apple-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gracia-labs/apple-sdk";
+			requirement = {
+				kind = revision;
+				revision = b7bddf37c421cbf11efc2cec025840b2c8767485;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7A0000000000000000000011 /* GraciaSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7A0000000000000000000021 /* XCRemoteSwiftPackageReference "apple-sdk" */;
+			productName = GraciaSDK;
+		};
+		7A0000000000000000000012 /* GraciaCamera */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7A0000000000000000000021 /* XCRemoteSwiftPackageReference "apple-sdk" */;
+			productName = GraciaCamera;
+		};
+		7A0000000000000000000013 /* GraciaView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7A0000000000000000000021 /* XCRemoteSwiftPackageReference "apple-sdk" */;
+			productName = GraciaView;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 000000000000000000000000 /* Project object */;
 }

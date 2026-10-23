@@ -1,0 +1,14 @@
+{
+  "originHash" : "a3a9211f0bc98abe6c0cc947a80990c0b8c9b4edfa061bddd27f421a912a40c4",
+  "pins" : [
+    {
+      "identity" : "apple-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gracia-labs/apple-sdk",
+      "state" : {
+        "revision" : "b7bddf37c421cbf11efc2cec025840b2c8767485"
+      }
+    }
+  ],
+  "version" : 3
+}

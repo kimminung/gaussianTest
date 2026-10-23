@@ -1,0 +1,20 @@
+무대 (Mudae) — 4DGS 볼류메트릭 뷰어
+Copyright 2026 Kim Minung
+Licensed under the Apache License, Version 2.0.
+
+This product includes software and content from third parties:
+
+1. Gracia SDK for Apple platforms — https://github.com/gracia-labs/apple-sdk
+   - Swift source files under `gaussianTest/Gracia/` marked "포팅" are derived from the
+     repository's visionOS demo (AVP/Sources), licensed under the MIT License,
+     Copyright (c) 2026 Gracia Labs and contributors. Modified for this project.
+   - The prebuilt renderer `gracia_sdk.xcframework` is fetched at build time via
+     Swift Package Manager and is proprietary to Gracia Labs (Part A of the
+     repository LICENSE). It is not redistributed in this repository.
+
+2. Gracia demo 4DGS content (`.mint` scenes referenced by URL in GraciaCatalog.swift)
+   is NOT part of this repository and is governed by Gracia's CONTENT-LICENSE:
+   demonstration and evaluation use only; no redistribution, conversion, extraction,
+   or publication. This app streams it only for evaluation on the user's own device.
+
+3. RealityKit, CompositorServices, ARKit, Metal, SwiftUI — Apple Inc. system frameworks.

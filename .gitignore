@@ -1,0 +1,23 @@
+# Xcode
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+DerivedData/
+build/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+.swiftpm/
+Package.resolved.bak
+
+# macOS
+.DS_Store
+
+# Gracia 데모 콘텐츠는 재배포 금지(CONTENT-LICENSE). 절대 커밋하지 않는다.
+*.mint
+*.sog
+
+# 로컬 테스트용 대용량 스플랫
+*.ply
+!Docs/**/*.ply

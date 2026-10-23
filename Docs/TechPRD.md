@@ -1,6 +1,6 @@
 # 무대 (Mudae) — 4D 가우시안 스플랫 볼류메트릭 뷰어 · 테크 PRD v0.1
 
-작성일 2026-10-22 · 대상 플랫폼 visionOS 27 (주), macOS 27 (개발·검증), iOS 27 (빌드만) · 상태: M0 구현 중
+작성일 2026-10-22 · 갱신 2026-10-23 · 대상 플랫폼 visionOS 27 실기기 (주), macOS 27 (개발·검증) · 상태: M0 완료, M1 진행 중(Gracia SDK 통합 완료)
 
 ## 1. 한 줄 요약
 
@@ -118,7 +118,24 @@ Gracia: 4DGS viewer 처럼, **움직이는 가우시안 스플랫(4DGS) 캡처�
 - 단위: PLY 파서(ascii·binary LE·BE·uchar 색), 레이아웃 오프셋, 플레이어 프레임 계산(배속·반복·탐색).
 - 시각: macOS 창에서 네이티브 스플랫 재생 스크린샷, 시뮬레이터 폴백 스크린샷(차례 확인 후), 실기기 사용자 확인.
 
-## 12. 오픈 이슈
+## 12. Gracia SDK 통합 (2026-10-23 추가, M1 선행)
+
+**배경.** 4D 콘텐츠를 구할 유일한 현실적 출처는 Gracia 가 공개한 데모 `.mint` 10편이다. 당초 계획(`.mint` → 우리 RealityKit 버퍼 어댑터)은 Gracia CONTENT-LICENSE 2(c)(d)(포맷 리버스 엔지니어링·변환·스플랫 추출 금지)에 저촉되고, 디코더가 바이너리 xcframework 라 기술적으로도 불가능하다. 허용되는 길은 1항 "Gracia SDK 로 렌더링"뿐이다.
+
+**결정.** Gracia SDK(MIT Swift 레이어 + 독점 바이너리, SwiftPM 의존성, 리비전 고정 `b7bddf3`)를 **두 번째 렌더 경로**로 통합한다.
+
+| 플랫폼 | 구현 | 상태 |
+|---|---|---|
+| macOS | `SplatsSceneView` 를 `NSViewRepresentable` 로 래핑(`GraciaMacPlayerView`) | ✅ 스트리밍 재생 확인 |
+| visionOS | Gracia MIT 데모 포팅: `CompositorLayer` 스테레오 렌더 루프 + `GraciaRenderLink` 우편함 + 양손 핀치 배치 | ✅ 빌드, 🧪 실기기 |
+
+**카탈로그.** `GraciaCatalog` 는 URL 과 콘텐츠 ID 만 갖는다. 직접 링크(gstatic.gracia.ai)는 Cloudflare 챌린지로 403 → 스트리밍 엔드포인트(`streaming.gracia.ai/api/v1/streaming/content/<id>`) + 공개 데모 토큰(`X-VIEW-TOKEN`)을 쓴다. 토큰은 Gracia 문서 페이지에 공개된 평가용이며 만료될 수 있다.
+
+**제약.** xcframework 에 시뮬레이터 슬라이스가 없어 `SUPPORTED_PLATFORMS = macosx xros` 로 축소(네이티브 스플랫도 시뮬 SDK 에 없으므로 손실 없음). macOS 샌드박스에 `network.client` 추가. 데모 콘텐츠는 앱에 번들하지 않고, 스크린샷을 공개 자료에 쓰지 않으며, `.gitignore` 로 `*.mint` 커밋을 막는다. UI 에 라이선스 배너를 항상 표시한다.
+
+**교훈.** `List(selection:)` 바인딩은 `onChange` 전에 값을 바꾸므로 "이미 선택됨" 가드에 `selectedItem` 을 쓰면 모든 전환이 무시된다 → 실제 로드된 항목(`loadedItem`)을 따로 둔다. `NSViewRepresentable` 에 `@Observable` 참조만 넘기면 `updateNSView` 가 생략될 수 있어 바뀌는 값을 명시적 입력으로 넘긴다.
+
+## 13. 오픈 이슈
 
 - 버퍼를 프레임마다 CPU 로 덮어쓸 때 프레임워크가 내부 정렬 캐시를 언제 갱신하는지 공개 문서 없음 → macOS 에서 실측.
 - visionOS 2D 창 안의 RealityView 미리보기는 깊이가 제한적 → 필요하면 `.volumetric` 창으로 교체.

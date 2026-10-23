@@ -33,6 +33,15 @@
 
 | ID | 태스크 | 상태 |
 |---|---|---|
+| T-110 | Gracia 라이선스 분석(CONTENT-LICENSE 2(c)(d): 변환·추출 금지 → 어댑터 대신 SDK 통합으로 전환) | ✅ |
+| T-111 | Gracia SDK SwiftPM 의존성(리비전 고정) + 플랫폼 `macosx xros` 축소 + network.client | ✅ |
+| T-112 | macOS `GraciaMacPlayerView`(SplatsSceneView 래핑) + 재생·탐색·배속 동기화 | ✅ 데모 2편 스트리밍 재생 확인 |
+| T-113 | visionOS Compositor Services 렌더러 포팅(렌더 루프·RenderLink·레이어 설정·배치·양손 핀치) | ✅ 빌드 / 🧪 실기기 |
+| T-114 | Gracia 데모 카탈로그 10편(스트리밍 엔드포인트 + 공개 토큰), 라이선스 배너, `.mint/.sog` 가져오기 | ✅ |
+| T-115 | 라이브러리 선택 구조(`LibraryItemID`)로 두 렌더 경로 통합, 전환 버그(`loadedItem`) 수정 | ✅ 자동 전환 시나리오 확인 |
+| T-116 | README(스크린샷·구조·포맷·검증 상태·라이선스 고지), LICENSE(Apache-2.0), NOTICE, .gitignore | ✅ |
+| T-117 | Vision Pro 에서 Gracia 몰입 공간 실측(스테레오·핀치 배치·mixed/full·스트리밍 버퍼링) | 🧪 |
+| T-118 | Gracia `.mint` 의 오디오 트랙(`Scene.audioData`) 재생 동기 | ⬜ |
 | T-101 | 접지 그림자(GroundingShadowComponent) 옵션 | ⬜ |
 | T-102 | LiDAR 바닥 스냅(SceneReconstruction 레이캐스트) | ⬜ |
 | T-103 | 고차 SH(degree 1–3) 파싱·전달, 색 공간 옵션 | ⬜ |
@@ -66,6 +75,10 @@
 | T-403 | SharePlay 동시 감상 | ❌ (개인 팀 제약) |
 
 ## 결정 기록
+
+- 2026-10-23 `.mint` 를 RealityKit 경로로 변환하지 않는다(라이선스 금지 + 바이너리 디코더). Gracia SDK 를 두 번째 렌더 경로로 통합한다.
+- 2026-10-23 시뮬레이터 지원 중단(`SUPPORTED_PLATFORMS = macosx xros`). Gracia xcframework 와 네이티브 스플랫 모두 시뮬 SDK 에 없다.
+- 2026-10-23 Gracia 직접 링크 대신 스트리밍 엔드포인트 + 공개 데모 토큰 사용(직접 링크는 Cloudflare 403).
 
 - 2026-10-22 네이티브 경로는 `#if !targetEnvironment(simulator)` 로만 컴파일. 시뮬레이터 SDK 에 타입이 없기 때문.
 - 2026-10-22 스플랫 수가 프레임마다 달라도 버퍼를 재할당하지 않고 남는 슬롯을 숨긴다(opacity logit −30).

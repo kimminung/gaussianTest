@@ -3,7 +3,7 @@ import Observation
 import simd
 import UniformTypeIdentifiers
 
-/// 라이브러리의 한 항목.
+/// 라이브러리의 RealityKit 경로 항목.
 struct StageScene: Identifiable {
     enum Kind: String {
         case sample = "샘플"
@@ -33,22 +33,36 @@ struct StagePlacement: Equatable {
     static let `default` = StagePlacement()
 }
 
+/// 사이드바 선택. RealityKit 경로(StageScene)와 Gracia 경로(GraciaScene)를 한 목록에서 고른다.
+enum LibraryItemID: Hashable {
+    case stage(UUID)
+    case gracia(UUID)
+}
+
 extension UTType {
     static let ply: UTType = UTType(filenameExtension: "ply") ?? .data
+    static let mint: UTType = UTType(filenameExtension: "mint") ?? .data
+    static let sog: UTType = UTType(filenameExtension: "sog") ?? .data
 }
 
 @Observable
 @MainActor
 final class AppModel {
     var scenes: [StageScene]
-    var selectedSceneID: StageScene.ID?
+    var graciaScenes: [GraciaScene]
+    var selectedItem: LibraryItemID?
+    /// 실제로 플레이어에 로드된 항목. `selectedItem` 은 바인딩이 먼저 바꾸므로 중복 로드 판단에 쓰면 안 된다.
+    private var loadedItem: LibraryItemID?
+
     let player = SplatPlayer()
+    let gracia = GraciaPlayerModel()
 
     var placement = StagePlacement.default
     var flipY = false
     var snapToFloor = false
     var centerHorizontally = false
 
+    /// RealityKit 무대 몰입 공간이 열려 있는지.
     var isImmersiveOpen = false
     var wantsFullImmersion = false
     var statusMessage: String?
@@ -80,16 +94,24 @@ final class AppModel {
                 defaultSnapToFloor: false
             ),
         ]
+        graciaScenes = GraciaCatalog.makeDemoScenes()
     }
 
     var selectedScene: StageScene? {
-        scenes.first { $0.id == selectedSceneID }
+        guard case .stage(let id) = selectedItem else { return nil }
+        return scenes.first { $0.id == id }
+    }
+
+    var selectedGraciaScene: GraciaScene? {
+        guard case .gracia(let id) = selectedItem else { return nil }
+        return graciaScenes.first { $0.id == id }
     }
 
     // MARK: 선택
 
     func select(_ scene: StageScene) async {
-        selectedSceneID = scene.id
+        selectedItem = .stage(scene.id)
+        loadedItem = .stage(scene.id)
         flipY = scene.defaultFlipY
         snapToFloor = scene.defaultSnapToFloor
         centerHorizontally = scene.kind != .sample
@@ -102,14 +124,29 @@ final class AppModel {
         }
     }
 
-    func selectByID(_ id: StageScene.ID?) {
-        guard let id, let scene = scenes.first(where: { $0.id == id }) else {
-            selectedSceneID = nil
+    func select(_ scene: GraciaScene) {
+        selectedItem = .gracia(scene.id)
+        loadedItem = .gracia(scene.id)
+        statusMessage = nil
+        player.pause()
+        gracia.select(scene.source)
+    }
+
+    func selectItem(_ item: LibraryItemID?) {
+        guard item != loadedItem else { return }
+        switch item {
+        case .stage(let id):
+            guard let scene = scenes.first(where: { $0.id == id }) else { return }
+            Task { await select(scene) }
+        case .gracia(let id):
+            guard let scene = graciaScenes.first(where: { $0.id == id }) else { return }
+            select(scene)
+        case nil:
+            selectedItem = nil
+            loadedItem = nil
             player.unload()
-            return
+            gracia.clear()
         }
-        guard scene.id != selectedSceneID || player.source == nil else { return }
-        Task { await select(scene) }
     }
 
     // MARK: 가져오기
@@ -119,7 +156,12 @@ final class AppModel {
         let exists = FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory)
         if exists, isDirectory.boolValue {
             importSequenceFolder(url)
-        } else {
+            return
+        }
+        switch url.pathExtension.lowercased() {
+        case "mint", "sog":
+            importGraciaFile(url)
+        default:
             importPLYFile(url)
         }
     }
@@ -157,12 +199,41 @@ final class AppModel {
         }
     }
 
+    /// `.mint`/`.sog` 는 Gracia 렌더 경로로. 렌더 스레드가 나중에 읽도록 컨테이너로 복사한다.
+    func importGraciaFile(_ url: URL) {
+        do {
+            let copy = try GraciaCatalog.copyIntoContainer(url)
+            let scene = GraciaScene(
+                title: url.deletingPathExtension().lastPathComponent,
+                subtitle: url.pathExtension.lowercased() == "mint" ? "4DGS 볼류메트릭 영상" : "정지 장면",
+                kind: .file,
+                source: .file(copy)
+            )
+            graciaScenes.append(scene)
+            statusMessage = "불러왔어요: \(scene.title)"
+            select(scene)
+        } catch {
+            statusMessage = "파일을 가져올 수 없어요: \(error.localizedDescription)"
+        }
+    }
+
     func removeScene(_ scene: StageScene) {
         guard scene.kind != .sample else { return }
         scenes.removeAll { $0.id == scene.id }
-        if selectedSceneID == scene.id {
-            selectedSceneID = nil
+        if case .stage(let id) = selectedItem, id == scene.id {
+            selectedItem = nil
+            loadedItem = nil
             player.unload()
+        }
+    }
+
+    func removeGraciaScene(_ scene: GraciaScene) {
+        guard scene.kind == .file else { return }
+        graciaScenes.removeAll { $0.id == scene.id }
+        if case .gracia(let id) = selectedItem, id == scene.id {
+            selectedItem = nil
+            loadedItem = nil
+            gracia.clear()
         }
     }
 }
